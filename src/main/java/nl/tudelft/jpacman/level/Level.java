@@ -203,13 +203,17 @@ public class Level {
      * NPCs.
      */
     public void start() {
+        System.out.println("here");
+
         synchronized (startStopLock) {
             if (isInProgress()) {
                 return;
             }
             if (playersHaveLives() && !isAnyPlayerAlive()) {
                 revivePlayers();
+                System.out.println("here");
             }
+            System.out.println("here2");
 
             startNPCs();
             inProgress = true;
@@ -304,7 +308,7 @@ public class Level {
 
     private void resetGhosts() {
         for (final Ghost npc : npcs.keySet()) {
-            npc.occupy(getBoard().squareAt(14,8));
+            npc.resetPosition();
         }
     }
 

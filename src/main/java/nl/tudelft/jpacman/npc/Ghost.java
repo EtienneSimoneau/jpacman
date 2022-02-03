@@ -86,8 +86,9 @@ public abstract class Ghost extends Unit {
         initialSquare = square;
     }
 
-    public void occupyInitialSquare() {
+    public void resetPosition() {
         occupy(initialSquare);
+        setDirection(Direction.EAST);
     }
 
     /**
