@@ -203,17 +203,17 @@ public class Level {
      * NPCs.
      */
     public void start() {
-        System.out.println("here");
+        System.out.println("Start");
 
         synchronized (startStopLock) {
             if (isInProgress()) {
+                System.out.println("early return");
                 return;
             }
             if (playersHaveLives() && !isAnyPlayerAlive()) {
                 revivePlayers();
-                System.out.println("here");
+                System.out.println("GG");
             }
-            System.out.println("here2");
 
             startNPCs();
             inProgress = true;
@@ -226,6 +226,7 @@ public class Level {
      * and stopping all NPCs.
      */
     public void stop() {
+        System.out.println("Early return Stop!");
         synchronized (startStopLock) {
             if (!isInProgress()) {
                 return;
@@ -276,12 +277,15 @@ public class Level {
      */
     private void updateObservers() {
         if (!isAnyPlayerAlive() && playersHaveLives() && isInProgress()) {
-            stop();
             resetGhosts();
+            stop();
+
+            System.out.println("Reseting ghosts");
         }
 
         if (!isAnyPlayerAlive() && !playersHaveLives()) {
             for (LevelObserver observer : observers) {
+                System.out.println("LOST!");
                 observer.levelLost();
             }
         }
@@ -297,7 +301,7 @@ public class Level {
         }
     }
 
-    private boolean playersHaveLives() {
+    public boolean playersHaveLives() {
         for (Player player : players) {
             if (player.getNbLives() > 0) {
                 return true;
