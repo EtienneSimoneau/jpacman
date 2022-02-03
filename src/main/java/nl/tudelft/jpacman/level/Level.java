@@ -16,7 +16,6 @@ import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.npc.Ghost;
-import java.io.*;
 
 
 /**
@@ -210,7 +209,9 @@ public class Level {
                 System.out.println("early return");
                 return;
             }
-            if (playersHaveLives() && !isAnyPlayerAlive()) {
+            if (playersHaveLives() && !isAnyPlayerAlive() && isPlayersDeathAnimationDone()) {
+                resetPacman();
+                resetGhosts();
                 revivePlayers();
                 System.out.println("GG");
             }
@@ -277,10 +278,8 @@ public class Level {
      */
     private void updateObservers() {
         if (!isAnyPlayerAlive() && playersHaveLives() && isInProgress()) {
-            resetGhosts();
             stop();
-
-            System.out.println("Reseting ghosts");
+            System.out.println("Stop");
         }
 
         if (!isAnyPlayerAlive() && !playersHaveLives()) {
@@ -295,6 +294,22 @@ public class Level {
             }
         }
     }
+
+    private boolean isPlayersDeathAnimationDone() {
+        for (Player player: players) {
+            if (!player.isDeathAnimationDone())
+                return false;
+        }
+        return true;
+    }
+
+    private void resetPacman() {
+        for (Player player: players) {
+            player.occupy(startSquares.get(0));
+            player.setDirection(Direction.EAST);
+        }
+    }
+
     private void revivePlayers() {
         for (Player player : players) {
            player.setAlive(true);

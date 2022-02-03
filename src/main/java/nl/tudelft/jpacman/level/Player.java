@@ -94,6 +94,10 @@ public class Player extends Unit {
         this.alive = isAlive;
     }
 
+    public boolean isDeathAnimationDone() {
+        return !deathSprite.isAnimating();
+    }
+
     /**
      * Returns the unit that caused the death of Pac-Man.
      *
