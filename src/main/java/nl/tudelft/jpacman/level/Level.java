@@ -108,8 +108,6 @@ public class Level {
         this.players = new ArrayList<>();
         this.collisions = collisionMap;
         this.observers = new HashSet<>();
-
-        System.out.println(startPositions.size());
     }
 
     /**
@@ -202,18 +200,14 @@ public class Level {
      * NPCs.
      */
     public void start() {
-        System.out.println("Start");
-
         synchronized (startStopLock) {
             if (isInProgress()) {
-                System.out.println("early return");
                 return;
             }
             if (playersHaveLives() && !isAnyPlayerAlive() && isPlayersDeathAnimationDone()) {
                 resetPacman();
                 resetGhosts();
                 revivePlayers();
-                System.out.println("GG");
             }
 
             startNPCs();
@@ -227,7 +221,6 @@ public class Level {
      * and stopping all NPCs.
      */
     public void stop() {
-        System.out.println("Early return Stop!");
         synchronized (startStopLock) {
             if (!isInProgress()) {
                 return;
@@ -279,12 +272,9 @@ public class Level {
     private void updateObservers() {
         if (!isAnyPlayerAlive() && playersHaveLives() && isInProgress()) {
             stop();
-            System.out.println("Stop");
         }
-
         if (!isAnyPlayerAlive() && !playersHaveLives()) {
             for (LevelObserver observer : observers) {
-                System.out.println("LOST!");
                 observer.levelLost();
             }
         }
