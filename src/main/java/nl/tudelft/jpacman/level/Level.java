@@ -16,6 +16,8 @@ import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.npc.Ghost;
+import java.io.*;
+
 
 /**
  * A level of Pac-Man. A level consists of the board with the players and the
@@ -107,6 +109,8 @@ public class Level {
         this.players = new ArrayList<>();
         this.collisions = collisionMap;
         this.observers = new HashSet<>();
+
+        System.out.println(startPositions.size());
     }
 
     /**
@@ -203,6 +207,10 @@ public class Level {
             if (isInProgress()) {
                 return;
             }
+            if (playersHaveLives() && !isAnyPlayerAlive()) {
+                revivePlayers();
+            }
+
             startNPCs();
             inProgress = true;
             updateObservers();
@@ -263,7 +271,12 @@ public class Level {
      * Updates the observers about the state of this level.
      */
     private void updateObservers() {
-        if (!isAnyPlayerAlive()) {
+        if (!isAnyPlayerAlive() && playersHaveLives() && isInProgress()) {
+            stop();
+            resetGhosts();
+        }
+
+        if (!isAnyPlayerAlive() && !playersHaveLives()) {
             for (LevelObserver observer : observers) {
                 observer.levelLost();
             }
@@ -272,6 +285,26 @@ public class Level {
             for (LevelObserver observer : observers) {
                 observer.levelWon();
             }
+        }
+    }
+    private void revivePlayers() {
+        for (Player player : players) {
+           player.setAlive(true);
+        }
+    }
+
+    private boolean playersHaveLives() {
+        for (Player player : players) {
+            if (player.getNbLives() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void resetGhosts() {
+        for (final Ghost npc : npcs.keySet()) {
+            npc.occupy(getBoard().squareAt(14,8));
         }
     }
 
