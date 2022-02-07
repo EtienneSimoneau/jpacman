@@ -355,7 +355,6 @@ public class Level {
      * @return The amount of pellets remaining on the board.
      */
     public int remainingPellets() {
-        Board board = getBoard();
         int pellets = 0;
 
         List<Square> boardSquares = board.getBoardSquares();
