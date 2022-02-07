@@ -270,14 +270,26 @@ public class Level {
      * Updates the observers about the state of this level.
      */
     private void updateObservers() {
+        verifyGameStops();
+        verifyLevelLost();
+        verifyLevelWon();
+    }
+
+    private void verifyGameStops() {
         if (!isAnyPlayerAlive() && playersHaveLives() && isInProgress()) {
             stop();
         }
+    }
+
+    private void verifyLevelLost() {
         if (!isAnyPlayerAlive() && !playersHaveLives()) {
             for (LevelObserver observer : observers) {
                 observer.levelLost();
             }
         }
+    }
+
+    private void verifyLevelWon() {
         if (remainingPellets() == 0) {
             for (LevelObserver observer : observers) {
                 observer.levelWon();
@@ -345,15 +357,17 @@ public class Level {
     public int remainingPellets() {
         Board board = getBoard();
         int pellets = 0;
-        for (int x = 0; x < board.getWidth(); x++) {
-            for (int y = 0; y < board.getHeight(); y++) {
-                for (Unit unit : board.squareAt(x, y).getOccupants()) {
-                    if (unit instanceof Pellet) {
-                        pellets++;
-                    }
+
+        List<Square> boardSquares = board.getBoardSquares();
+
+        for (Square square: boardSquares) {
+            for (Unit unit : square.getOccupants()) {
+                if (unit instanceof Pellet) {
+                    pellets++;
                 }
             }
         }
+
         assert pellets >= 0;
         return pellets;
     }

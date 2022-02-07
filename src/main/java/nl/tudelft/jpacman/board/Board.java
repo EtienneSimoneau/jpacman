@@ -1,6 +1,9 @@
 package nl.tudelft.jpacman.board;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A top-down view of a matrix of {@link Square}s.
  *
@@ -77,6 +80,18 @@ public class Board {
         Square result = board[x][y];
         assert result != null : "Follows from invariant.";
         return result;
+    }
+
+    public List<Square> getBoardSquares() {
+        ArrayList squares = new ArrayList();
+
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
+                squares.add(squareAt(x,y));
+            }
+        }
+
+        return squares;
     }
 
     /**
