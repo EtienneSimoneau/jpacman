@@ -147,6 +147,7 @@ public class MapParser {
         Square ghostSquare = boardCreator.createGround();
         ghosts.add(ghost);
         ghost.occupy(ghostSquare);
+        ghost.setInitialSquare(ghostSquare);
         return ghostSquare;
     }
 

@@ -160,4 +160,7 @@ public class AnimatedSprite implements Sprite {
         return currentSprite().getHeight();
     }
 
+    public boolean isAnimating() {
+        return animating;
+    }
 }

@@ -32,6 +32,8 @@ public abstract class Ghost extends Unit {
      */
     private final int intervalVariation;
 
+    private Square initialSquare;
+
     /**
      * Calculates the next move for this unit and returns the direction to move
      * in.
@@ -78,6 +80,15 @@ public abstract class Ghost extends Unit {
      */
     public long getInterval() {
         return this.moveInterval + new Random().nextInt(this.intervalVariation);
+    }
+
+    public void setInitialSquare(Square square) {
+        initialSquare = square;
+    }
+
+    public void resetPosition() {
+        occupy(initialSquare);
+        setDirection(Direction.EAST);
     }
 
     /**

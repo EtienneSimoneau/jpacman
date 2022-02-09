@@ -17,6 +17,7 @@ import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.npc.Ghost;
 
+
 /**
  * A level of Pac-Man. A level consists of the board with the players and the
  * AIs on it.
@@ -203,6 +204,12 @@ public class Level {
             if (isInProgress()) {
                 return;
             }
+            if (playersHaveLives() && !isAnyPlayerAlive() && isPlayersDeathAnimationDone()) {
+                resetPacman();
+                resetGhosts();
+                revivePlayers();
+            }
+
             startNPCs();
             inProgress = true;
             updateObservers();
@@ -263,15 +270,66 @@ public class Level {
      * Updates the observers about the state of this level.
      */
     private void updateObservers() {
-        if (!isAnyPlayerAlive()) {
+        verifyGameStops();
+        verifyLevelLost();
+        verifyLevelWon();
+    }
+
+    private void verifyGameStops() {
+        if (!isAnyPlayerAlive() && playersHaveLives() && isInProgress()) {
+            stop();
+        }
+    }
+
+    private void verifyLevelLost() {
+        if (!isAnyPlayerAlive() && !playersHaveLives()) {
             for (LevelObserver observer : observers) {
                 observer.levelLost();
             }
         }
+    }
+
+    private void verifyLevelWon() {
         if (remainingPellets() == 0) {
             for (LevelObserver observer : observers) {
                 observer.levelWon();
             }
+        }
+    }
+
+    private boolean isPlayersDeathAnimationDone() {
+        for (Player player: players) {
+            if (!player.isDeathAnimationDone())
+                return false;
+        }
+        return true;
+    }
+
+    private void resetPacman() {
+        for (Player player: players) {
+            player.occupy(startSquares.get(0));
+            player.setDirection(Direction.EAST);
+        }
+    }
+
+    private void revivePlayers() {
+        for (Player player : players) {
+           player.setAlive(true);
+        }
+    }
+
+    public boolean playersHaveLives() {
+        for (Player player : players) {
+            if (player.getNbLives() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void resetGhosts() {
+        for (final Ghost npc : npcs.keySet()) {
+            npc.resetPosition();
         }
     }
 
@@ -297,17 +355,18 @@ public class Level {
      * @return The amount of pellets remaining on the board.
      */
     public int remainingPellets() {
-        Board board = getBoard();
         int pellets = 0;
-        for (int x = 0; x < board.getWidth(); x++) {
-            for (int y = 0; y < board.getHeight(); y++) {
-                for (Unit unit : board.squareAt(x, y).getOccupants()) {
-                    if (unit instanceof Pellet) {
-                        pellets++;
-                    }
+
+        List<Square> boardSquares = board.getBoardSquares();
+
+        for (Square square: boardSquares) {
+            for (Unit unit : square.getOccupants()) {
+                if (unit instanceof Pellet) {
+                    pellets++;
                 }
             }
         }
+
         assert pellets >= 0;
         return pellets;
     }

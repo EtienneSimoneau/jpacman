@@ -10,6 +10,8 @@ import javax.swing.JPanel;
 
 import nl.tudelft.jpacman.level.Player;
 
+import static javax.swing.SwingConstants.CENTER;
+
 /**
  * A panel consisting of a column for each player, with the numbered players on
  * top and their respective scores underneath.
@@ -27,7 +29,7 @@ public class ScorePanel extends JPanel {
     /**
      * The map of players and the labels their scores are on.
      */
-    private final Map<Player, JLabel> scoreLabels;
+    private transient final Map<Player, JLabel> scoreLabels;
 
     /**
      * The default way in which the score is shown.
@@ -38,7 +40,7 @@ public class ScorePanel extends JPanel {
     /**
      * The way to format the score information.
      */
-    private ScoreFormatter scoreFormatter = DEFAULT_SCORE_FORMATTER;
+    private transient ScoreFormatter scoreFormatter = DEFAULT_SCORE_FORMATTER;
 
     /**
      * Creates a new score panel with a column for each player.
@@ -53,11 +55,11 @@ public class ScorePanel extends JPanel {
         setLayout(new GridLayout(2, players.size()));
 
         for (int i = 1; i <= players.size(); i++) {
-            add(new JLabel("Player " + i, JLabel.CENTER));
+            add(new JLabel("Player " + i, CENTER));
         }
         scoreLabels = new LinkedHashMap<>();
         for (Player player : players) {
-            JLabel scoreLabel = new JLabel("0", JLabel.CENTER);
+            JLabel scoreLabel = new JLabel("0", CENTER);
             scoreLabels.put(player, scoreLabel);
             add(scoreLabel);
         }
@@ -69,9 +71,9 @@ public class ScorePanel extends JPanel {
     protected void refresh() {
         for (Map.Entry<Player, JLabel> entry : scoreLabels.entrySet()) {
             Player player = entry.getKey();
-            String score = "";
-            if (!player.isAlive()) {
-                score = "You died. ";
+            String score = "Lives: " + player.getNbLives() + "  ";
+            if (player.getNbLives() <= 0) {
+                score = "You died.  ";
             }
             score += scoreFormatter.format(player);
             entry.getValue().setText(score);

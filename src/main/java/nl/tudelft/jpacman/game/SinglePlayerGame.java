@@ -1,7 +1,5 @@
 package nl.tudelft.jpacman.game;
 
-import java.util.List;
-
 import nl.tudelft.jpacman.level.Level;
 import nl.tudelft.jpacman.level.Player;
 
@@ -47,7 +45,7 @@ public class SinglePlayerGame extends Game {
     }
 
     @Override
-    public List<Player> getPlayers() {
+    public ImmutableList<Player> getPlayers() {
         return ImmutableList.of(player);
     }
 
